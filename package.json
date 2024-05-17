@@ -1,0 +1,41 @@
+{
+  "name": "daily-reflect-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --exec babel-node ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PhuNguyenUET/Daily-Reflect-Backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PhuNguyenUET/Daily-Reflect-Backend/issues"
+  },
+  "homepage": "https://github.com/PhuNguyenUET/Daily-Reflect-Backend#readme",
+  "dependencies": {
+    "body-parse": "^0.1.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.4",
+    "@babel/node": "^7.23.9",
+    "@babel/preset-env": "^7.24.4",
+    "bcrypt": "^5.1.1",
+    "crypto": "^1.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "mime-types": "^2.1.35",
+    "momment": "^0.0.1",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.9.7",
+    "nodemon": "^3.1.0",
+    "pg": "^8.11.5",
+    "sequelize": "^6.37.1",
+    "sequelize-cli": "^6.6.2"
+  }
+}
