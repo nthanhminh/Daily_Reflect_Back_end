@@ -14,17 +14,17 @@ const generateAccessToken = (tokenData, JWT_SECRET, JWT_EXPIRE) => {
     return jwt.sign(tokenData, JWT_SECRET, { expiresIn: JWT_EXPIRE })
 }
 
-const register = (name, password, backgroundId, welcomeSongId) => {
+const register = (userName, password, name, backgroundId = 1, welcomeSongId = 1) => {
     return new Promise(async(resolve, reject) => {
         try {
-            const user = await authRepository.checkName(name)
+            const user = await authRepository.checkUserName(userName)
             if(user){
-                resolve('Name already registered. Please try another name!')
+                resolve('userName already registered. Please try another userName!')
                 return;
             }
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
-            const mes = await authRepository.register(name, hashedPassword, backgroundId, welcomeSongId)
+            const mes = await authRepository.register(userName, hashedPassword, name, backgroundId, welcomeSongId)
             resolve(mes)
             return;
         } catch (error) {
@@ -33,12 +33,12 @@ const register = (name, password, backgroundId, welcomeSongId) => {
     })
 }
 
-const login = (name, password) => {
+const login = (userName, password) => {
     return new Promise(async (resolve,reject) => {
         try {
-            const user = await authRepository.checkName(name)
+            const user = await authRepository.checkUserName(userName)
             if(user == null) {
-                resolve('Username is not existed. Please try again')
+                resolve('UseruserName is not existed. Please try again')
             }
             const isPasswordCorrect = await bcrypt.compare(password,user.password)
             if(isPasswordCorrect === false){
@@ -46,7 +46,7 @@ const login = (name, password) => {
             }
             const tokenData = {
                 id: user.id,
-                name: user.name,
+                userName: user.userName,
             }
             const accessToken = generateAccessToken(tokenData,JWT_SECRET,"1s")
             const refreshToken = generateAccessToken(tokenData, REFRESH_TOKEN_SECRET,"24h");
@@ -80,7 +80,7 @@ const getNewAccessToken = (refreshToken) => {
                 console.log(user);
                 const tokenData = {
                     id: user.id,
-                    name: user.name
+                    userName: user.userName
                 }
                 const newAccessToken = generateAccessToken(tokenData, JWT_SECRET, "1h")
                 return resolve(newAccessToken)

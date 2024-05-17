@@ -2,8 +2,8 @@ import authService from '../services/authService'
 
 const login = async (req, res) => {
     try {
-        const {name, password} = req.body
-        const data = await authService.login(name, password)
+        const {userName, name, password} = req.body
+        const data = await authService.login(userName, password, name)
         res.status(200).send(JSON.stringify(data))
     } catch (error) {
         res.status(500).send('Internal Server Error')
@@ -13,9 +13,9 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
     try {
-        const {name, password}  = req.body
-        console.log(name, password)
-        const mes = await authService.register(name, password)
+        const {userName, name, password}  = req.body
+        console.log(userName, password)
+        const mes = await authService.register(userName, password, name)
         res.status(200).send(JSON.stringify(mes))
     } catch (error) {
         res.status(500).send('Internal Server Error')

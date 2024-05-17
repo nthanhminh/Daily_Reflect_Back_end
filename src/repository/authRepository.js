@@ -1,9 +1,10 @@
 import db from '../models/index';
 
-const register = (name, password, backgroundId = 1, welcomeSongId = 1) => {
+const register = (userName, password, name , backgroundId = 1, welcomeSongId = 1) => {
     return new Promise(async(resolve, reject) => {
         try {
             const newUser = await db.User.create({
+                userName: userName,
                 name: name,
                 password: password,
                 backgroundId: backgroundId,
@@ -22,11 +23,11 @@ const register = (name, password, backgroundId = 1, welcomeSongId = 1) => {
     })
 }
 
-const checkName = (name) => {
+const checkUserName = (userName) => {
     return new Promise(async(resolve, reject) => {
         try {
             const user = await db.User.findOne({
-                where: {name: name}
+                where: {userName: userName}
             })
 
             if(user){
@@ -46,5 +47,5 @@ const checkName = (name) => {
 
 module.exports = {
     register,
-    checkName
+    checkUserName
 }
