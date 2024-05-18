@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      InviteCode.belongsTo(models.User, {foreignKey: 'userId'})
     }
   }
   InviteCode.init({

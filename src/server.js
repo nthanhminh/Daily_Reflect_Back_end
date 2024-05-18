@@ -3,6 +3,7 @@ import bodyParser from "body-parser"
 import { Sequelize } from 'sequelize';
 import viewEngine from "./config/viewEngine"
 import mainRouter from "./route/web"
+import initDB from './config/initDB'
 import friendRouter from "./route/friend"
 import postRouter from './route/post'
 import authRouter from './route/auth'
@@ -18,6 +19,7 @@ app.use("/",postRouter)
 app.use("/",authRouter)
 
 viewEngine(app)
+initDB()
 
 const port = process.env.PORT || 8000
 

@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Story.hasOne(models.DataOfStory, {foreignKey: 'storyId'});
+      Story.belongsTo(models.User, {foreignKey: 'userId'});
     }
   }
   Story.init({

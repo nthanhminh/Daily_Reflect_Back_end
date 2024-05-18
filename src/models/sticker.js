@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Sticker.hasMany(models.UserSetSticker, {foreignKey: 'stickerId'});
     }
   }
   Sticker.init({

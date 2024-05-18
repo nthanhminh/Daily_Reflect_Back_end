@@ -16,6 +16,9 @@ const customizeConfig = {
   "host": process.env.DB_HOST,
   "dialect": "postgres",
   "logging": false,
+  "query": {
+    "raw": true,
+  },
   "dialectOptions": {
     "ssl": {
       "require": true,
@@ -56,10 +59,10 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.sequelize.sync().then(
-  (req) => {
-      console.log("Connected to daily_reflect_database")
-  }
-)
+// db.sequelize.sync().then(
+//   (req) => {
+//       console.log("Connected to daily_reflect_database")
+//   }
+// )
 
 module.exports = db;
