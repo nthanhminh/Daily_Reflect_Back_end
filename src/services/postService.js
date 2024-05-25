@@ -177,15 +177,22 @@ const getMyPostForUserId = (userId) => {
     return new Promise( async (resolve, reject) => {
         try {
             const data = await getMyPosts(userId);
-            let postIdList = []
-            if(data){
-                postIdList =  data.map((item) => item.dataValues.id)
+            console.log('Data received from getMyPosts:', data); // Log the data to inspect it
+            let postIdList = [];
+
+            if (Array.isArray(data)) {
+                postIdList = data.map((item) => item.dataValues.id);
+            } else {
+                console.error('Data is not an array:', data); // Log an error if data is not an array
+                return reject(new TypeError('Data is not an array'));
             }
-            let posts = postIdList.map(async (postId) => await getPost(postId))
-            posts = await Promise.all(posts)
+
+            let posts = postIdList.map(async (postId) => await getPost(postId));
+            posts = await Promise.all(posts);
             resolve(posts);
         } catch (error) {
-            reject(error)
+            console.error('Error in getMyPostForUserId:', error); // Log the error
+            reject(error);
         }
     })
 }
