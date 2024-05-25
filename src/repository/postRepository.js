@@ -102,7 +102,7 @@ const getPost = (postId) => {
                 ...post.dataValues,
                 userName: post.User.dataValues.name, // Ensure 'name' is a valid field in the User model
                 dataLink: dataOfPost.map((dataItem) => {
-                  return `localhost:8080/getDataFromId/${dataItem}`;
+                  return `https://daily-reflect-back-end.onrender.com/getDataFromId/${dataItem}`;
                 })
               };
 
