@@ -177,7 +177,10 @@ const getMyPostForUserId = (userId) => {
     return new Promise( async (resolve, reject) => {
         try {
             const data = await getMyPosts(userId);
-            const postIdList =  data.map((item) => item.dataValues.id)
+            let postIdList = []
+            if(data){
+                postIdList =  data.map((item) => item.dataValues.id)
+            }
             let posts = postIdList.map(async (postId) => await getPost(postId))
             posts = await Promise.all(posts)
             resolve(posts);
