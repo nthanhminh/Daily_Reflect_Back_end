@@ -11,13 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Post.hasMany(models.DataOfPost, {foreignKey: 'postId'});
-      // Post.belongsTo(models.User, {foreignKey: 'userId'});
-      // Post.hasMany(models.UserLikePost, {foreignKey: 'postId'})
+      Post.belongsTo(models.User, {foreignKey: 'userId'});
+      Post.hasMany(models.DataOfPost, { foreignKey: 'postId' }); // Thêm dòng này
+      Post.hasMany(models.UserLikePost, { foreignKey: 'postId' }); // Thêm dòng này
     }
   }
   Post.init({
-    // postId: DataTypes.INTEGER,
     userId: DataTypes.INTEGER,
     date: DataTypes.DATE,
     content: DataTypes.STRING,

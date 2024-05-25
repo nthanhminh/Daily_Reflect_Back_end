@@ -7,15 +7,14 @@ const getPostFromFriends = (friendListId) => {
             const posts = await db.Post.findAll(
                 {
                     where: {
-                        id: {
+                        userId: {
                             [Op.in]: friendListId
                         }
                     }
                 }
             )
-
-            console.log(posts)
-            resolve('Checking')
+            // console.log(posts)
+            resolve(posts)
         } catch (error) {
             reject(error);
         }
@@ -30,8 +29,7 @@ const getMyPosts = (userId) => {
                     userId: userId
                 }
             })
-            console.log(posts)
-            resolve('checking')
+            resolve(posts)
         } catch (error) {
             reject(error);
         }
@@ -84,25 +82,33 @@ const getDataFromPostId = (postId) => {
 }
 
 const getPost = (postId) => {
-    return new Promise( async(resovle,reject) => {
+    return new Promise( async(resolve,reject) => {
         try {
             const post = await db.Post.findOne({
-                where: {
-                    id: postId
-                }
-            })
-
-            // console.log(post)
-            const dataOfPost = await getDataFromPostId(postId)
-
-            const data = {
+                where: { id: postId },
+                include: [{
+                  model: db.User,
+                }]
+              });
+        
+              if (!post) {
+                resolve('No post found');
+                return;
+              }
+              
+              const dataOfPost = await getDataFromPostId(postId);
+        
+              const data = {
                 ...post.dataValues,
+                userName: post.User.dataValues.name, // Ensure 'name' is a valid field in the User model
                 dataLink: dataOfPost.map((dataItem) => {
-                    return `localhost:8080/getDataFromId/${dataItem}`
+                  return `localhost:8080/getDataFromId/${dataItem}`;
                 })
-            }
+              };
 
-            resovle(data)
+            //   console.log(data)
+        
+              resolve(data);
         } catch (error) {
             reject(error);
         }

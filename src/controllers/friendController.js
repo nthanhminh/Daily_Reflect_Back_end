@@ -35,8 +35,20 @@ const getFriendIdList = async (req, res) => {
     }
 }
 
+const getFriendListInfo = async (req, res) => {
+    try {
+        const {userId} = req.body
+        const data = await friendService.getFriendListInfo(userId)
+        res.send(JSON.stringify(data))
+    } catch (error){
+        res.status(500).send('Error when getting friend list id')
+        console.log(error)
+    }
+}
+
 module.exports = {
     createInviteCode,
     postFriendRequest,
-    getFriendIdList
+    getFriendIdList,
+    getFriendListInfo
 }

@@ -74,7 +74,7 @@ const getDataFromPostId = async (req, res) => {
 
 const getPost = async (req, res) => {
     try {
-        const {postId1} = req.body
+        const {postId} = req.body
         const data = await postService.getPost(postId)
         res.send(JSON.stringify(data))
     } catch (error) {
@@ -143,6 +143,28 @@ const setCookies = async (req, res) => {
     }
 }
 
+const getPostForUserId = async (req, res) => {
+    try {
+        const {userId} = req.body
+        const data = await postService.getPostForUserId(userId)
+        res.send(JSON.stringify(data))
+    } catch (error) {
+        res.status(500).send('Internal Server Error')
+        console.error(error)
+    }
+}
+
+const getMyPostForUserId = async (req, res) => {
+    try {
+        const {userId} = req.body
+        const data = await postService.getMyPostForUserId(userId)
+        res.send(JSON.stringify(data))
+    } catch (error) {
+        res.status(500).send('Internal Server Error')
+        console.error(error)
+    }
+}
+
 module.exports = {
     uploadPost,
     getDataFromPostId,
@@ -153,7 +175,9 @@ module.exports = {
     likePost,
     unlikePost,
     getNumberOfUsersWhoLikePost,
-    setCookies
+    setCookies,
+    getPostForUserId,
+    getMyPostForUserId
 }
 
 

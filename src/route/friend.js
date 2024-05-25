@@ -11,4 +11,6 @@ router.post('/createInviteCode', friendController.createInviteCode)
 
 router.post('/postFriendRequest', friendController.postFriendRequest)
 
+router.get('/getFriendListInfo', friendController.getFriendListInfo)
+
 module.exports = router

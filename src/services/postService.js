@@ -1,4 +1,6 @@
 import postRepository from '../repository/postRepository'
+import integrationService from './integrationService'
+import moment from 'moment'
 
 const getPostFromFriends = (friendListId) => {
     return new Promise(async (resolve, reject) => {
@@ -7,7 +9,8 @@ const getPostFromFriends = (friendListId) => {
                 reject('Invalid request')
             }
             const data = await postRepository.getPostFromFriends(friendListId)
-            resolve(data)
+            const postIdList = data.map((post) => post.dataValues.id)
+            resolve(postIdList)
         } catch (error) {
             reject(error);
         }
@@ -49,7 +52,18 @@ const getPost = (postId) => {
                 resolve('Invalid request')
             }
             const data = await postRepository.getPost(postId)
-            resolve(data)
+            const { id, userId, date, content, userName, dataLink } = data
+            const now = moment(new Date());
+            const dateDifferent = handleDate(now,date)
+            const newData = {
+                id,
+                userId,
+                dateDifferent,
+                content, 
+                userName, 
+                dataLink
+            }
+            resolve(newData)
         } catch (error) {
             reject(error);
         }
@@ -114,6 +128,64 @@ const getNumberOfUsersWhoLikePost = (postId) => {
     })
 }
 
+const handleDate = (now, date) => {
+    const diffInMs = now.diff(date);
+
+    let diff;
+    let unit;
+
+    if (diffInMs < 60000) { // less than 1 minute
+        diff = moment.duration(diffInMs).seconds();
+        unit = 'seconds';
+    } else if (diffInMs < 3600000) { // less than 1 hour
+        diff = moment.duration(diffInMs).minutes();
+        unit = 'minutes';
+    } else if (diffInMs < 86400000) { // less than 1 day
+        diff = moment.duration(diffInMs).hours();
+        unit = 'hours';
+    } else if (diffInMs < 604800000) { // less than 1 week
+        diff = moment.duration(diffInMs).days();
+        unit = 'days';
+    } else if (diffInMs < 2592000000) { // less than 1 month (approximately 30 days)
+        diff = moment.duration(diffInMs).weeks();
+        unit = 'weeks';
+    } else if (diffInMs < 31536000000) { // less than 1 year (approximately 365 days)
+        diff = moment.duration(diffInMs).months();
+        unit = 'months';
+    } else { // 1 year or more
+        diff = moment.duration(diffInMs).years();
+        unit = 'years';
+    }
+    return `${diff} ${unit} ago` ;
+}
+
+const getPostForUserId = (userId) => {
+    return new Promise( async (resolve, reject) => {
+        try {
+            const friendIdList = await integrationService.getFriendIdList(userId);
+            const postIdList = await getPostFromFriends(friendIdList)
+            const posts = postIdList.map(async(postId) => await getPost(postId))
+            const data = await Promise.all(posts);
+            resolve(data);
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+const getMyPostForUserId = (userId) => {
+    return new Promise( async (resolve, reject) => {
+        try {
+            const data = await getMyPosts(userId);
+            const postIdList =  data.map((item) => item.dataValues.id)
+            let posts = postIdList.map(async (postId) => await getPost(postId))
+            posts = await Promise.all(posts)
+            resolve(posts);
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
 
 module.exports = {
     uploadPost,
@@ -124,5 +196,7 @@ module.exports = {
     getPost,
     likePost,
     unlikePost,
-    getNumberOfUsersWhoLikePost
+    getNumberOfUsersWhoLikePost,
+    getPostForUserId,
+    getMyPostForUserId
 }

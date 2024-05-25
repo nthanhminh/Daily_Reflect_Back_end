@@ -16,9 +16,9 @@ const customizeConfig = {
   "host": process.env.DB_HOST,
   "dialect": "postgres",
   "logging": false,
-  "query": {
-    "raw": true,
-  },
+  // "query": {
+  //   "raw": true,
+  // },
   "dialectOptions": {
     "ssl": {
       "require": true,

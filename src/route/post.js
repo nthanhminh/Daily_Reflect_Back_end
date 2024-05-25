@@ -25,6 +25,10 @@ router.get('/getPost', postController.getPost)
 router.get('/getNumberOfUsersWhoLikePosts', postController.getNumberOfUsersWhoLikePost)
 
 router.get('/setCookie', postController.setCookies)
+    
+router.get('/getPostForUserId' , postController.getPostForUserId)
+
+router.get('/getMyPostForUserId', postController.getMyPostForUserId)
 
 router.delete('/unlikePost', postController.unlikePost)
 

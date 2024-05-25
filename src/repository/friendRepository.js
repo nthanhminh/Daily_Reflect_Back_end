@@ -1,12 +1,14 @@
 import db from '../models/index'
 import crypto from 'crypto'
 import moment from 'moment'
+import { Op } from 'sequelize';
+
 
 const createInviteCode = async (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
             const inviteCode = generateRandomCode(32);
-            const expiration = 600
+            const expiration = 6000
             await db.InviteCode.create({
                 userId: userId,
                 inviteCode: inviteCode,
@@ -43,19 +45,18 @@ const postFriendRequest = async(inviteCode, myID) => {
                 resolve('Invitation code has expired')
             }
 
-            if(checkFriendRelationshipIsExist(myID, userId)) {
-                resolve('Friend Relationship is existed')
-            }
+            const checkFriendRelationship = await checkFriendRelationshipIsExist(myID, userId)
 
-            await Friend.create({
+            console.log(checkFriendRelationship)
+
+            if(checkFriendRelationship) {
+                resolve('Friend Relationship is existed')
+                return;
+            }
+            await db.Friend.create({
                 userId: myID,
                 anotherUserId: userId
             })
-
-            console.log(diff)
-            console.log(userId)
-            console.log(expiration)
-            console.log(createdAt)
             resolve("Successfully")
         } catch (error) {
             reject(error)
@@ -66,11 +67,26 @@ const postFriendRequest = async(inviteCode, myID) => {
 const checkFriendRelationshipIsExist = async(userId, anotherUserId) => {
     try {
         const friendIsExist = await db.Friend.findOne({
-            $or: [
-                { userId: myID, anotherUserId: userId },
-                { userId: userId, anotherUserId: myID }
-            ]
-        })
+            where: {
+                [Op.or]: [
+                    { 
+                        [Op.and]: [
+                            { userId: anotherUserId },
+                            { anotherUserId: userId }
+                        ] 
+                    },
+                    { 
+                        [Op.and]: [
+                            { userId: userId },
+                            { anotherUserId: anotherUserId }
+                        ] 
+                    }
+                ]
+            }
+        });
+        
+
+        console.log(friendIsExist)
 
         if(friendIsExist){
             return true
@@ -96,7 +112,10 @@ const getFriendIdList = async(userId) => {
                 ]
             })
                 
-            const friendIdList = friendListObj.map((friendItem) => friendItem.userId)
+            const friendIdList = friendListObj.map((friendItem) => {
+                if(friendItem.userId === userId) return friendItem.anotherUserId
+                return friendItem.userId
+            })
 
             resolve(friendIdList)
         } catch (error) {
@@ -105,10 +124,26 @@ const getFriendIdList = async(userId) => {
     })
 }
 
+const getUserInfo = (userId) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            const user = await db.User.findOne({
+                where: {
+                    id: userId
+                }
+            })
+
+            resolve(user)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
 
 module.exports = {
     createInviteCode,
     postFriendRequest,
     checkFriendRelationshipIsExist,
     getFriendIdList,
+    getUserInfo
 }
