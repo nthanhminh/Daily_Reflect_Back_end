@@ -20,9 +20,6 @@ const getPostFromFriends = (friendListId) => {
 const getMyPosts = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if(!userId || userId.length <=0){
-                resolve('Invalid request')
-            }
             const data = await postRepository.getMyPosts(userId)
             resolve(data)
         } catch (error) {
